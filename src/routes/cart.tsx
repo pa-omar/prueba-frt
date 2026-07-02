@@ -84,10 +84,22 @@ function CartPage() {
 
   async function applyCoupon() {
     setCouponMsg("");
+    if (!coupon.trim()) return;
+
     try {
-      const { data } = await api.get(`/coupons/${coupon}/validate`);
-      setDiscount(data.discount || 0);
-      setCouponMsg("Cupón aplicado");
+      const { data } = await api.post("/coupons/validate", {
+        code: coupon.trim(),
+        orderSubtotal: subtotal,
+      });
+
+      if (data.isValid === false) {
+        setCouponMsg(data.message || "Cupón inválido");
+        setDiscount(0);
+        return;
+      }
+
+      setDiscount(Number(data.discountAmount ?? data.discount ?? 0));
+      setCouponMsg(data.message || "Cupón aplicado");
     } catch { setCouponMsg("Cupón inválido"); setDiscount(0); }
   }
 

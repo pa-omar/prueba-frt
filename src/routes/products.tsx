@@ -6,11 +6,43 @@ import { api } from "@/lib/api";
 import { Search, Package, Pill } from "lucide-react";
 
 type Product = {
-  id: string; name: string; laboratory?: string;
-  price: number; categoryName?: string; categoryId?: string;
+  id: string;
+  productId?: number;
+  slug?: string;
+  name: string;
+  laboratory?: string;
+  price: number;
+  categoryName?: string;
+  categoryId?: string;
   requiresPrescription?: boolean;
 };
+
 type Category = { id: string; name: string };
+
+function normalizeProduct(p: any): Product {
+  const productId = p.productId ?? p.product_id ?? p.id;
+  const slug = p.slug;
+  const variants = p.variants ?? p.Variants ?? [];
+
+  return {
+    id: String(slug ?? productId),
+    productId,
+    slug,
+    name: p.name ?? p.Name ?? "Producto",
+    laboratory: p.laboratory ?? p.laboratoryName ?? p.laboratory_name ?? p.LaboratoryName,
+    price: Number(p.price ?? p.Price ?? variants?.[0]?.price ?? variants?.[0]?.Price ?? 0),
+    categoryName: p.categoryName ?? p.category_name ?? p.CategoryName,
+    categoryId: String(p.categoryId ?? p.category_id ?? p.CategoryId ?? ""),
+    requiresPrescription: p.requiresPrescription ?? p.requires_prescription ?? p.RequiresPrescription,
+  };
+}
+
+function normalizeCategory(c: any): Category {
+  return {
+    id: String(c.id ?? c.categoryId ?? c.category_id ?? c.CategoryId),
+    name: c.name ?? c.Name ?? "Categoría",
+  };
+}
 
 export const Route = createFileRoute("/products")({
   component: ProductsPage,
@@ -31,8 +63,8 @@ function ProductsPage() {
       categories.length ? Promise.resolve(categories) : api.get("/categories").then(r => r.data).catch(() => []),
     ]).then(([prods, cats]) => {
       if (!active) return;
-      setProducts(prods.items || prods.data || prods || []);
-      setCategories(cats.items || cats || []);
+      setProducts((prods.items || prods.data || prods || []).map(normalizeProduct));
+      setCategories((cats.items || cats || []).map(normalizeCategory));
       setLoading(false);
     });
     return () => { active = false; };
@@ -76,7 +108,7 @@ function ProductsPage() {
                   {p.laboratory && <p className="text-xs text-muted-foreground mt-0.5">{p.laboratory}</p>}
                   <div className="mt-auto pt-3 flex items-center justify-between">
                     <span className="text-lg font-bold">S/ {Number(p.price).toFixed(2)}</span>
-                    <span className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">Agregar</span>
+                    <span className="rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground">Ver</span>
                   </div>
                 </div>
               </Link>
