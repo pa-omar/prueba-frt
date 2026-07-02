@@ -26,8 +26,6 @@ export function Navbar() {
         <nav className="hidden items-center gap-1 md:flex">
           <Link to="/" className={linkCls(pathname === "/")}>Inicio</Link>
           <Link to="/products" className={linkCls(pathname.startsWith("/products"))}>Productos</Link>
-          {user && <Link to="/orders" className={linkCls(pathname === "/orders")}>Mis pedidos</Link>}
-          {user && <Link to="/prescriptions" className={linkCls(pathname === "/prescriptions")}>Recetas</Link>}
         </nav>
         <div className="flex items-center gap-2">
           <Link to="/cart" className="relative grid h-10 w-10 place-items-center rounded-md hover:bg-accent">
@@ -49,6 +47,7 @@ export function Navbar() {
             </>
           ) : (
             <>
+              <Link to="/admin/login" className="rounded-md px-3 py-2 text-sm font-medium text-muted-foreground hover:bg-accent">Admin</Link>
               <Link to="/login" className="rounded-md px-3 py-2 text-sm font-medium hover:bg-accent">Ingresar</Link>
               <Link to="/register" className="rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground hover:opacity-90">
                 Crear cuenta

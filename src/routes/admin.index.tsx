@@ -16,7 +16,7 @@ function AdminDashboard() {
   useEffect(() => {
     Promise.all([
       api.get("/admin/reports/dashboard").then(r => r.data).catch(() => ({})),
-      api.get("/admin/reports/top-products").then(r => r.data).catch(() => []),
+      api.get("/admin/reports/most-wishlisted", { params: { top: 6 } }).then(r => r.data).catch(() => []),
     ]).then(([s, t]) => { setStats(s); setTop(t.items || t || []); setLoading(false); });
   }, []);
 
@@ -48,7 +48,7 @@ function AdminDashboard() {
       </div>
       <div className="grid gap-6 lg:grid-cols-2">
         <div className="rounded-xl border bg-card p-5">
-          <h2 className="font-semibold mb-3">Top productos vendidos</h2>
+          <h2 className="font-semibold mb-3">Productos más deseados</h2>
           {top.length === 0 ? <p className="text-sm text-muted-foreground">Sin datos aún.</p> : (
             <ul className="divide-y">
               {top.slice(0, 6).map((p: any, i: number) => (
@@ -57,7 +57,7 @@ function AdminDashboard() {
                     <span className="grid h-7 w-7 place-items-center rounded-full bg-primary/10 text-primary text-xs font-bold">{i + 1}</span>
                     <span className="text-sm font-medium">{p.name}</span>
                   </div>
-                  <span className="text-sm text-muted-foreground">{p.sold ?? p.quantity ?? 0} uds</span>
+                  <span className="text-sm text-muted-foreground">{p.wishlistCount ?? p.count ?? p.quantity ?? 0} veces</span>
                 </li>
               ))}
             </ul>

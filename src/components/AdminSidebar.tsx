@@ -1,19 +1,17 @@
 import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import {
-  LayoutDashboard, Package, ShoppingBag, Boxes, Layers,
-  Tag, FileText, Bell, LogOut, ExternalLink, Pill,
+  LayoutDashboard, Package, Boxes, Layers,
+  Tag, FileText, LogOut, ExternalLink, Pill,
 } from "lucide-react";
 import { useAuth, clearAuth } from "@/lib/auth";
 
 const items = [
   { to: "/admin", label: "Dashboard", icon: LayoutDashboard, exact: true },
   { to: "/admin/products", label: "Productos", icon: Package },
-  { to: "/admin/orders", label: "Pedidos", icon: ShoppingBag },
   { to: "/admin/inventory", label: "Inventario", icon: Boxes },
   { to: "/admin/batches", label: "Lotes", icon: Layers },
   { to: "/admin/promotions", label: "Promociones", icon: Tag },
   { to: "/admin/prescriptions", label: "Recetas", icon: FileText },
-  { to: "/admin/notifications", label: "Notificaciones", icon: Bell },
 ];
 
 export function AdminSidebar() {
